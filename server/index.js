@@ -1,18 +1,24 @@
-const { app } = require('./app');
+const { app } = require("./app");
 const PORT = 3000;
-const { db, Person, Dish } = require('../db');
+const { db, Person, Dish } = require("../db");
+
+const person1 = { name: "mark", isAttending: true };
+const person2 = { name: "russell", isAttending: false };
+const person3 = { name: "ryan", isAttending: true };
 
 async function syncAndSeedDatabase() {
   try {
     await db.sync({ force: true });
-    //  Create some rows in your Person and Dish tables here
-    //  to interact with your API using the `npm run start:watch`
-    //  or `npm run start` commands.
+    await Promise.all([
+      Person.create(person1),
+      Person.create(person2),
+      Person.create(person3)
+    ]);
   } catch (e) {
     console.log(e);
   }
 
-  console.log('done seeding and associating!');
+  console.log("done seeding and associating!");
 }
 
 syncAndSeedDatabase().then(() => {

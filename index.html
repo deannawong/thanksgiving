@@ -1,0 +1,67 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Thanksgiving</title>
+    <script
+      src="https://unpkg.com/react@16/umd/react.development.js"
+      crossorigin
+    ></script>
+    <script
+      src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"
+      crossorigin
+    ></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-router-dom/5.0.1/react-router-dom.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+      const { HashRouter, Link, Route, Switch, NavLink } = ReactRouterDOM;
+      const { Component } = React;
+      const { render } = ReactDOM;
+      const People = ({ people }) => {
+        return (
+          <ul>
+            {people.map(person => (
+              <li>{person.name}</li>
+            ))}
+          </ul>
+        );
+      };
+
+      class App extends Component {
+        constructor() {
+          super();
+          this.state = {
+            people: [],
+            dishes: []
+          };
+        }
+        componentDidMount() {
+          const urls = ["/api/people", "/api/dishes"];
+
+          Promise.all(urls.map(url => axios.get(url))).then(responses => {
+            const [people, dishes] = responses;
+            this.setState({ people, dishes });
+            console.log(this.state);
+          });
+        }
+
+        render() {
+          const { people, dishes } = this.state;
+          return (
+            <HashRouter>
+              <div className="container">
+                <Route path="/" render={() => <People people={people} />} />
+              </div>
+            </HashRouter>
+          );
+        }
+      }
+      render(<App />, document.querySelector("#root"));
+    </script>
+  </body>
+</html>
